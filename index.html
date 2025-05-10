@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=expand_circle_down" />
+</head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #e0f7fa, #80deea);
+    margin: 0;
+  }
+
+  #calculator {
+    background-color: #212121;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    width: 320px;
+    transition: transform 0.2s;
+  }
+
+
+  #display {
+    height: 80px;
+    font-size: 28px;
+    text-align: right;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #bbdefb;
+    color: #1a237e;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  #display::-webkit-scrollbar {
+    display: none;
+  }
+
+  #buttons,
+  #scientificButtons {
+    display: grid;
+    gap: 16px;
+  }
+
+  #buttons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  #scientificButtons {
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 20px;
+    padding: 10px;
+  }
+
+  button {
+    border: none;
+    border-radius: 50px;
+    padding: 18px;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    background-color: #424242;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    background: #64b5f6;
+    transform: translateY(-2px);
+  }
+
+  .operator {
+    background-color: #1976d2;
+  }
+
+  .operator:hover {
+    background-color: #0d47a1;
+  }
+
+  #clear,
+  #backspace {
+    background-color: #d32f2f;
+  }
+
+  #clear:hover,
+  #backspace:hover {
+    background-color: #b71c1c;
+  }
+
+  #equals {
+    background-color: #43a047;
+  }
+
+  #equals:hover {
+    background-color: #2e7d32;
+  }
+
+  #toggleScientific span {
+    font-size: 28px;
+  }
+
+  .scientific {
+    background-color: #5e35b1;
+  }
+
+  .scientific:hover {
+    background-color: #4527a0;
+  }
+</style>
+
+
+<body>
+    <div id="calculator">
+    <div id="display">0</div>
+    <div id="buttons">
+        <button id="clear">C</button>
+        <button id="backspace"><</button>
+        <button class="operator">%</button>
+        <button class="operator">/</button>
+
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button class="operator">*</button>
+
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button class="operator">-</button>
+
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button class="operator">+</button>
+
+        <button id="toggleScientific"><span class="material-symbols-outlined">
+expand_circle_down
+</span></button>
+        <button>0</button>
+        <button>.</button>
+        <button id="equals">=</button>
+
+        
+
+    </div>
+    
+    <div id="scientificButtons" style="display: none;">
+      <button class="scientific">sin</button>
+      <button class="scientific">cos</button>
+      <button class="scientific">tan</button>
+      <button class="scientific">√</button>
+      <button class="scientific">x²</button>
+      <button class="scientific">log</button>
+    </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
