@@ -11,31 +11,19 @@ const toggleButton = document.getElementById("toggleScientific");
 const sciButton = document.getElementById("scientificButtons");
 
 toggleButton.addEventListener('click', () => {
-    sciButton.style.display = sciButton.style.display === 'none' ? 'grid' : 'none';
+  sciButton.style.display = sciButton.style.display === 'none' ? 'grid' : 'none';
 });
 
-// Display update:
 function updateDisplay(value) {
   display.textContent = value.toString();
 }
 
-// Basic operations:
-function add(a, b) {
-  return a + b;
-}
-function subtract(a, b) {
-  return a - b;
-}
-function multiply(a, b) {
-  return a * b;
-}
-function divide(a, b) {
-  if (b === 0) return 'Error: /0!';
-  return a / b;
-}
-function modulus(a, b) {
-  return a % b;
-}
+function add(a, b) { return a + b; }
+function subtract(a, b) { return a - b; }
+function multiply(a, b) { return a * b; }
+function divide(a, b) { return b === 0 ? 'Error: /0!' : a / b; }
+function modulus(a, b) { return a % b; }
+
 function operate(op, a, b) {
   a = parseFloat(a);
   b = parseFloat(b);
@@ -49,7 +37,6 @@ function operate(op, a, b) {
   }
 }
 
-// Clear all:
 function clearAll() {
   currentInput = '';
   previousInput = '';
@@ -59,7 +46,6 @@ function clearAll() {
   updateDisplay(0);
 }
 
-// Append number:
 function appendNumber(num) {
   if (shouldReset) {
     currentInput = '';
@@ -70,15 +56,19 @@ function appendNumber(num) {
   currentInput += num;
 
   if (pendingScientificFunc) {
-  updateDisplay(`${pendingScientificFunc}(${currentInput})`);
-} else {
-  updateDisplay(currentInput);
+    updateDisplay(`${pendingScientificFunc}(${currentInput})`);
+  } else {
+    updateDisplay(currentInput);
+  }
 }
 
-}
-
-// Set operator:
 function setOperator(op) {
+  if (pendingScientificFunc) {
+    currentInput += op;
+    updateDisplay(`${pendingScientificFunc}(${currentInput})`);
+    return;
+  }
+
   if (currentInput === '') return;
   if (previousInput !== '') {
     previousInput = operate(operator, previousInput, currentInput).toString();
@@ -90,15 +80,13 @@ function setOperator(op) {
   currentInput = '';
 }
 
-// Calculate result:
 function calculate() {
   if (pendingScientificFunc && currentInput !== '') {
     applyScientificFunction(pendingScientificFunc);
     return;
   }
 
-  if (operator === null || currentInput === '' || previousInput === '')
-    return;
+  if (operator === null || currentInput === '' || previousInput === '') return;
 
   let result = operate(operator, previousInput, currentInput);
   if (typeof result === 'string' && result.includes('Error')) {
@@ -114,47 +102,73 @@ function calculate() {
   shouldReset = true;
 }
 
-// Backspace:
 function backspace() {
   if (shouldReset) return;
   currentInput = currentInput.slice(0, -1);
   if (currentInput === '') {
     currentInput = '0';
   }
-  updateDisplay(currentInput);
+
+  if (pendingScientificFunc) {
+    updateDisplay(`${pendingScientificFunc}(${currentInput})`);
+  } else {
+    updateDisplay(currentInput);
+  }
 }
 
-// Apply scientific function:
 function applyScientificFunction(func) {
-  let value = parseFloat(currentInput || display.textContent);
-  let result;
+  let inputExpr = currentInput || display.textContent;
 
-  switch (func) {
-    case 'sin':
-      result = Math.sin(value * Math.PI / 180); break;
-    case 'cos':
-      result = Math.cos(value * Math.PI / 180); break;
-    case 'tan':
-      result = Math.tan(value * Math.PI / 180); break;
-    case '√':
-      result = Math.sqrt(value); break;
-    case 'x²':
-      result = Math.pow(value, 2); break;
-    case 'log':
-      result = Math.log10(value); break;
-    default:
-      return;
+  const match = inputExpr.match(/^[a-z]+\((.*)\)$/i);
+  if (match) {
+    inputExpr = match[1];
   }
 
-  result = Math.round(result * 1e10) / 1e10;
-  let expression = `${func}(${value}) = ${result}`;
-  updateDisplay(expression);
-  currentInput = result.toString();
+  let value;
+  try {
+    value = eval(inputExpr);
+  } catch {
+    updateDisplay(`${func}(${inputExpr}) = Error`);
+    currentInput = '';
+    return;
+  }
+
+  let result;
+  switch (func) {
+    case 'sin': result = Math.sin(value * Math.PI / 180); break;
+    case 'cos': result = Math.cos(value * Math.PI / 180); break;
+    case 'tan':
+      const radians = value * Math.PI / 180;
+      result = Math.abs(Math.cos(radians)) < 1e-10 ? Infinity : Math.tan(radians);
+      break;
+    case '√': result = value < 0 ? 'Error' : Math.sqrt(value); break;
+    case 'x²': result = Math.pow(value, 2); break;
+    case 'log':
+      if (value < 0) result = 'Error';
+      else if (value === 0) result = -Infinity;
+      else result = Math.log10(value);
+      break;
+    default: result = 'Error';
+  }
+
+  if (result === 'Error') {
+    updateDisplay(`${func}(${inputExpr}) = Error`);
+    currentInput = '';
+  } else if (result === Infinity) {
+    updateDisplay(`${func}(${inputExpr}) = ∞`);
+    currentInput = result.toString();
+  } else if (result === -Infinity) {
+    updateDisplay(`${func}(${inputExpr}) = -∞`);
+    currentInput = result.toString();
+  } else {
+    result = Math.round(result * 1e10) / 1e10;
+    updateDisplay(`${func}(${inputExpr}) = ${result}`);
+    currentInput = result.toString();
+  }
+
   pendingScientificFunc = null;
-  shouldReset = true;
 }
 
-// Bind scientific buttons:
 document.querySelectorAll('.scientific').forEach(btn => {
   btn.addEventListener('click', () => {
     if (!currentInput) {
@@ -166,7 +180,6 @@ document.querySelectorAll('.scientific').forEach(btn => {
   });
 });
 
-// Handle normal button clicks:
 buttons.forEach(button => {
   button.addEventListener('click', () => {
     const value = button.textContent.trim();
@@ -184,3 +197,4 @@ buttons.forEach(button => {
     }
   });
 });
+
