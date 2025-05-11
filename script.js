@@ -18,11 +18,21 @@ function updateDisplay(value) {
   display.textContent = value.toString();
 }
 
-function add(a, b) { return a + b; }
-function subtract(a, b) { return a - b; }
-function multiply(a, b) { return a * b; }
-function divide(a, b) { return b === 0 ? 'Error: /0!' : a / b; }
-function modulus(a, b) { return a % b; }
+function add(a, b) {
+   return a + b; 
+  }
+function subtract(a, b) {
+   return a - b;
+   }
+function multiply(a, b) { 
+  return a * b;
+ }
+function divide(a, b) { 
+  return b === 0 ? 'Error: /0!' : a / b; 
+}
+function modulus(a, b) {
+   return a % b;
+   }
 
 function operate(op, a, b) {
   a = parseFloat(a);
@@ -135,14 +145,18 @@ function applyScientificFunction(func) {
 
   let result;
   switch (func) {
-    case 'sin': result = Math.sin(value * Math.PI / 180); break;
-    case 'cos': result = Math.cos(value * Math.PI / 180); break;
+    case 'sin': result = Math.sin(value * Math.PI / 180); 
+    break;
+    case 'cos': result = Math.cos(value * Math.PI / 180);
+     break;
     case 'tan':
       const radians = value * Math.PI / 180;
       result = Math.abs(Math.cos(radians)) < 1e-10 ? Infinity : Math.tan(radians);
       break;
-    case '√': result = value < 0 ? 'Error' : Math.sqrt(value); break;
-    case 'x²': result = Math.pow(value, 2); break;
+    case '√': result = value < 0 ? 'Error' : Math.sqrt(value);
+     break;
+    case 'x²': result = Math.pow(value, 2); 
+    break;
     case 'log':
       if (value < 0) result = 'Error';
       else if (value === 0) result = -Infinity;
